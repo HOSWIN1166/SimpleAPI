@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace FirstSample01.API.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20230718133211_SimpleApi")]
-    partial class SimpleApi
+    [Migration("20230719125231_SimpleAPI")]
+    partial class SimpleAPI
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

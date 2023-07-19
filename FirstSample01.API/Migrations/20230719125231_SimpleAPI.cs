@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace FirstSample01.API.Migrations
 {
     /// <inheritdoc />
-    public partial class SimpleApi : Migration
+    public partial class SimpleAPI : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
