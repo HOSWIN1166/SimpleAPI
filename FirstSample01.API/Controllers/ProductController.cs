@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using FirstSample01.API.Models.Services.Statuses;
+using FirstSample01.API.Models.Contracts;
+using FirstSample01.API.Models.Services;
 
 namespace FirstSample01.API.Controllers
 {
@@ -11,24 +13,85 @@ namespace FirstSample01.API.Controllers
     [ApiController]
     public class ProductController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IProductRepository<Guid?, bool, RepositoryStatus> _productRepository;
 
-        public ProductController(ApplicationDbContext context)
+        public ProductController(IProductRepository<Guid?, bool, RepositoryStatus> productRepository, ApplicationDbContext context)
         {
-            _context = context;
+            _productRepository = productRepository;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        {
+            var (products, status) = await _productRepository.SelectAllAsync();
+
+            if (status == RepositoryStatus.Success)
+            {
+                return Ok(products);
+            }
+            else if (status == RepositoryStatus.TableIsEmpty)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Product>> GetById(Guid id)
+        {
+            var (product, status) = await _productRepository.SelectByIdAsync(id);
+
+            if (status == RepositoryStatus.Success)
+            {
+                return Ok(product);
+            }
+            else if (status == RepositoryStatus.NotExist)
+            {
+                return NotFound();
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+
+        #region [-PostProduct-]
+        [HttpPost("PostProduct")]
+        public async Task<ActionResult<Product>> Post(Product product)
+        {
+            var (isExist, existStatus) = _productRepository.IsExist(product.Id);
+
+            if (existStatus == RepositoryStatus.Success && isExist)
+            {
+                return Conflict();
+            }
+
+            var insertResult = await _productRepository.InsertAsync(product);
+
+            if (insertResult == RepositoryStatus.Success)
+            {
+                return CreatedAtAction(nameof(GetById), new { id = product.Id }, product);
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        } 
+        #endregion
 
         #region [-PutProduct-]
         [HttpPut("PutProduct")]
-        public IActionResult Put(Guid id, [FromBody] Product product)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Product product)
         {
             if (product == null || product.Id != id)
             {
                 return BadRequest();
             }
 
-            var updateResult = _context.UpdateAsync(product);
+            var updateResult = await _productRepository.UpdateAsync(product);
 
             if (updateResult == RepositoryStatus.NullEntity)
             {
@@ -46,10 +109,10 @@ namespace FirstSample01.API.Controllers
         #endregion
 
         #region [-DeleteProduct-]
-        [HttpDelete("{id}")]
-        public IActionResult Delete(Guid id)
+        [HttpDelete("DeleteProduct")]
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var deleteResult = _context.DeleteByIdAsync(id);
+            var deleteResult =await _productRepository.DeleteByIdAsync(id);
 
             if (deleteResult == RepositoryStatus.NullEntity)
             {

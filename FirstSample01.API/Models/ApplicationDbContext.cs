@@ -24,11 +24,6 @@ namespace FirstSample01.API.Models
             base.OnModelCreating(modelBuilder);
         }
 
-        internal RepositoryStatus DeleteByIdAsync(Guid id)
-        {
-            throw new NotImplementedException();
-        }
-
         public DbSet<Product> Product { get; set; }
     }
 }

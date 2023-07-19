@@ -1,4 +1,7 @@
 using FirstSample01.API.Models;
+using FirstSample01.API.Models.Contracts;
+using FirstSample01.API.Models.Services;
+using FirstSample01.API.Models.Services.Statuses;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +16,7 @@ builder.Services.AddSwaggerGen();
 
 var connectionString = builder.Configuration.GetConnectionString("Default");
 builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(connectionString));
+builder.Services.AddScoped<IProductRepository<Guid?, bool, RepositoryStatus>, ProductRepository>();
 
 
 var app = builder.Build();
