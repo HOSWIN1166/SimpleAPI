@@ -43,7 +43,7 @@ namespace FirstSample01.API.Controllers
             }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("GetProductid")]
         public async Task<ActionResult<Product>> GetById(Guid id)
         {
             var (product, status) = await _productRepository.SelectByIdAsync(id);
@@ -135,7 +135,7 @@ namespace FirstSample01.API.Controllers
                 return StatusCode(500);
             }
         }
-        [HttpDelete("{id}")]
+        [HttpDelete("ProductDeleteid")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var deleteResult = await _productRepository.DeleteByIdAsync(id);
