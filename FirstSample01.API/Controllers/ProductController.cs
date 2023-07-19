@@ -15,12 +15,16 @@ namespace FirstSample01.API.Controllers
     {
         private readonly IProductRepository<Guid?, bool, RepositoryStatus> _productRepository;
 
+        #region [-Ctor-]
         public ProductController(IProductRepository<Guid?, bool, RepositoryStatus> productRepository, ApplicationDbContext context)
         {
             _productRepository = productRepository;
-        }
+        } 
+        #endregion
 
-        [HttpGet]
+        #region [-GetProduct-]
+
+        [HttpGet("GetProduct")]
         public async Task<ActionResult<IEnumerable<Product>>> Get()
         {
             var (products, status) = await _productRepository.SelectAllAsync();
@@ -56,7 +60,8 @@ namespace FirstSample01.API.Controllers
             {
                 return StatusCode(500);
             }
-        }
+        } 
+        #endregion
 
         #region [-PostProduct-]
         [HttpPost("PostProduct")]
@@ -105,11 +110,11 @@ namespace FirstSample01.API.Controllers
             {
                 return StatusCode(500);
             }
-        } 
+        }
         #endregion
 
-        #region [-DeleteProduct-]
-        [HttpDelete("DeleteProduct")]
+        #region [-ProductDelete-]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var deleteResult =await _productRepository.DeleteByIdAsync(id);
@@ -126,7 +131,28 @@ namespace FirstSample01.API.Controllers
             {
                 return StatusCode(500);
             }
-        } 
+        }
+        [HttpDelete("ProductDelete")]
+        public async Task<ActionResult> ProductDelete(Guid id)
+        {
+            var (product, selectStatus) = await _productRepository.SelectByIdAsync(id);
+
+            if (selectStatus == RepositoryStatus.NotExist)
+            {
+                return NotFound();
+            }
+
+            var deleteResult = await _productRepository.DeleteAsync(product);
+
+            if (deleteResult == RepositoryStatus.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
         #endregion
     }
 }
