@@ -114,24 +114,6 @@ namespace FirstSample01.API.Controllers
         #endregion
 
         #region [-ProductDelete-]
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> Delete(Guid id)
-        {
-            var deleteResult =await _productRepository.DeleteByIdAsync(id);
-
-            if (deleteResult == RepositoryStatus.NullEntity)
-            {
-                return NotFound();
-            }
-            else if (deleteResult == RepositoryStatus.Success)
-            {
-                return NoContent();
-            }
-            else
-            {
-                return StatusCode(500);
-            }
-        }
         [HttpDelete("ProductDelete")]
         public async Task<ActionResult> ProductDelete(Guid id)
         {
@@ -145,6 +127,24 @@ namespace FirstSample01.API.Controllers
             var deleteResult = await _productRepository.DeleteAsync(product);
 
             if (deleteResult == RepositoryStatus.Success)
+            {
+                return NoContent();
+            }
+            else
+            {
+                return StatusCode(500);
+            }
+        }
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var deleteResult = await _productRepository.DeleteByIdAsync(id);
+
+            if (deleteResult == RepositoryStatus.NullEntity)
+            {
+                return NotFound();
+            }
+            else if (deleteResult == RepositoryStatus.Success)
             {
                 return NoContent();
             }
