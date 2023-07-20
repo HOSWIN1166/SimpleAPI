@@ -31,7 +31,7 @@ namespace FirstSample01.API.Controllers
 
             if (status == RepositoryStatus.Success)
             {
-                return Ok(products);
+                return Ok(GetproductsDto);
             }
             else if (status == RepositoryStatus.TableIsEmpty)
             {
@@ -50,7 +50,7 @@ namespace FirstSample01.API.Controllers
 
             if (status == RepositoryStatus.Success)
             {
-                return Ok(product);
+                return Ok(GetproductsDto);
             }
             else if (status == RepositoryStatus.NotExist)
             {
@@ -65,7 +65,7 @@ namespace FirstSample01.API.Controllers
 
         #region [-PostProduct-]
         [HttpPost("PostProduct")]
-        public async Task<IActionResult> Post(Product product)
+        public async Task<IActionResult> Post(PostProductDto postProductDto)
         {
             var (isExist, existStatus) = _productRepository.IsExist(product.Id);
 
