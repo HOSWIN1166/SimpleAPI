@@ -25,7 +25,7 @@ namespace FirstSample01.API.Controllers
         #region [-GetProduct-]
 
         [HttpGet("GetProduct")]
-        public async Task<ActionResult<IEnumerable<Product>>> Get()
+        public async Task<IActionResult> Get()
         {
             var (products, status) = await _productRepository.SelectAllAsync();
 
@@ -44,7 +44,7 @@ namespace FirstSample01.API.Controllers
         }
 
         [HttpGet("GetProductid")]
-        public async Task<ActionResult<Product>> GetById(Guid id)
+        public async Task<IActionResult> GetById(Guid id)
         {
             var (product, status) = await _productRepository.SelectByIdAsync(id);
 
@@ -65,7 +65,7 @@ namespace FirstSample01.API.Controllers
 
         #region [-PostProduct-]
         [HttpPost("PostProduct")]
-        public async Task<ActionResult<Product>> Post(Product product)
+        public async Task<IActionResult> Post(Product product)
         {
             var (isExist, existStatus) = _productRepository.IsExist(product.Id);
 
@@ -115,7 +115,7 @@ namespace FirstSample01.API.Controllers
 
         #region [-ProductDelete-]
         [HttpDelete("ProductDelete")]
-        public async Task<ActionResult> ProductDelete(Guid id)
+        public async Task<IActionResult> ProductDelete(Guid id)
         {
             var (product, selectStatus) = await _productRepository.SelectByIdAsync(id);
 
